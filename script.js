@@ -169,19 +169,20 @@ function downloadPDF() {
     const clientName = document.getElementById('clientName').value || 'Cliente';
     
     const options = {
-        margin:       5,
+        margin:       10,
         filename:     `Presupuesto_${clientName.replace(/\s+/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { 
             scale: 2, 
             useCORS: true, 
             letterRendering: true,
-            scrollY: 0,
-            windowWidth: 800
+            scrollY: 0
         },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Método directo de html2pdf que genera y descarga/abre de forma segura sin romper la app
-    html2pdf().from(element).set(options).save();
+    html2pdf().from(element).set(options).save().catch(err => {
+        console.error("Error al generar el PDF:", err);
+        alert("No se pudo generar el PDF. Probá actualizando la página.");
+    });
 }
