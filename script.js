@@ -167,6 +167,9 @@ function downloadPDF() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Descarga directa del archivo PDF
-    html2pdf().from(element).set(options).save();
+    // Genera el PDF y lo abre en una pestaña nueva listo para guardar en el iPhone
+    html2pdf().from(element).set(options).outputPdf('datauristring', function(pdfDataUri) {
+        const win = window.open();
+        win.document.write(`<iframe src="${pdfDataUri}" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>`);
+    });
 }
