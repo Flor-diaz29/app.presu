@@ -169,7 +169,7 @@ function downloadPDF() {
     const clientName = document.getElementById('clientName').value || 'Cliente';
     
     const options = {
-        margin:       10,
+        margin:       5,
         filename:     `Presupuesto_${clientName.replace(/\s+/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { 
@@ -182,8 +182,6 @@ function downloadPDF() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().from(element).set(options).outputPdf('datauristring', function(pdfDataUri) {
-        const win = window.open();
-        win.document.write(`<iframe src="${pdfDataUri}" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>`);
-    });
+    // Método directo de html2pdf que genera y descarga/abre de forma segura sin romper la app
+    html2pdf().from(element).set(options).save();
 }
