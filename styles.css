@@ -378,10 +378,3 @@ header {
         grid-template-columns: 1fr;
     }
 }
-
-@media print {
-    body { background: white; }
-    header, .controls-panel, .actions-bar, .shortcuts, .modal { display: none !important; }
-    .app-container { display: block; padding: 0; }
-    .preview-container { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; background: #e0f2fe !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-}
