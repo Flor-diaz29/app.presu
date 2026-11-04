@@ -6,7 +6,7 @@
     <title>Generador de Presupuestos - Electricidad</title>
     <!-- FontAwesome para los íconos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <!-- Librería Html2Pdf para descarga directa de PDF -->
+    <!-- Librería Html2Pdf para generación de PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- CSS principal -->
     <link rel="stylesheet" href="styles.css">
@@ -58,4 +58,142 @@
                     <span class="chip" onclick="addShortcut('Instalación de Térmica/Diferencial', 1, 15000)">+ Térmica/Diferencial</span>
                     <span class="chip" onclick="addShortcut('Cambio de Cableado por Boca', 1, 8000)">+ Cableado p/boca</span>
                     <span class="chip" onclick="addShortcut('Colocación de Artefacto Luz', 1, 6000)">+ Artefacto Luz</span>
-                    <span class="chip" onclick="addShortcut('Armado de Tablero Principal',
+                    <span class="chip" onclick="addShortcut('Armado de Tablero Principal', 1, 35000)">+ Tablero Principal</span>
+                    <span class="chip" onclick="addShortcut('Búsqueda de Cortocircuito / Fuga', 1, 20000)">+ Diagnóstico</span>
+                </div>
+            </div>
+
+            <!-- Ítems dinámicos -->
+            <div class="form-group">
+                <label>Detalle de Trabajos e Insumos</label>
+                <div class="items-header">
+                    <span>Concepto</span>
+                    <span>Cant.</span>
+                    <span>Precio U.</span>
+                    <span></span>
+                </div>
+                <div id="itemsContainer"></div>
+                
+                <button class="btn btn-secondary full-width" onclick="addItem()">
+                    <i class="fa-solid fa-plus"></i> Agregar Ítem Manual
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label for="budgetNotes">Notas / Condición de Pago</label>
+                <textarea id="budgetNotes" class="form-control" rows="2" placeholder="Ej: Materiales no incluidos. 50% anticipo." oninput="updatePreview()"></textarea>
+            </div>
+
+            <!-- Acciones de salida -->
+            <div class="actions-bar">
+                <button class="btn btn-success flex-1" onclick="sendWhatsApp()">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="btn btn-primary flex-1" onclick="downloadPDF()">
+                    <i class="fa-solid fa-file-arrow-down"></i> Descargar PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- VISTA PREVIA -->
+        <div class="panel">
+            <div class="preview-container" id="printableArea">
+                <div>
+                    <div class="invoice-header-box">
+                        <div class="invoice-header-top">
+                            <div class="header-left">
+                                <img id="prevLogo" class="company-logo" src="" alt="Logo" style="display:none;">
+                            </div>
+                            <div class="header-right">
+                                <h1 class="document-title">PRESUPUESTO</h1>
+                            </div>
+                        </div>
+
+                        <div class="electrician-info-bar" id="prevElectricianInfoBar"></div>
+                    </div>
+
+                    <div class="invoice-meta">
+                        <div class="meta-box">
+                            <p><strong>PRESUPUESTO PARA:</strong> <span id="prevClientName">Cliente Ejemplo</span></p>
+                            <p><strong>TELÉFONO:</strong> <span id="prevClientPhone">-</span></p>
+                        </div>
+                        <div class="meta-box text-right">
+                            <p><strong>FECHA EMISIÓN:</strong> <span id="prevDate">-</span></p>
+                            <p><strong>VÁLIDO HASTA:</strong> <span id="prevDueDate" class="highlight-text">-</span></p>
+                        </div>
+                    </div>
+
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th class="num">Cant.</th>
+                                <th class="num">P. Unitario</th>
+                                <th class="num">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prevItems"></tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <div class="invoice-summary">
+                        <div class="total-box">
+                            <div>TOTAL ESTIMADO</div>
+                            <h3 id="prevTotal">$0,00</h3>
+                        </div>
+                    </div>
+
+                    <div class="invoice-footer">
+                        <div class="observations-box">
+                            <strong>Observaciones:</strong> 
+                            <span id="prevNotes">Materiales no incluidos salvo expresa especificación.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓN DE PERFIL -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <h3><i class="fa-solid fa-user-gear"></i> Datos del Electricista</h3>
+            <p class="modal-sub">Estos datos quedan guardados en tu navegador para futuros presupuestos.</p>
+            
+            <div class="form-group">
+                <label for="profileLogoInput">Logo de tu Marca / Nombre Comercial</label>
+                <input type="file" id="profileLogoInput" class="form-control" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="profBrand">Nombre Comercial / Fantasía</label>
+                <input type="text" id="profBrand" class="form-control" placeholder="Ej: Electra Soluciones">
+            </div>
+            <div class="form-group">
+                <label for="profName">Tu Nombre y Apellido (Opcional)</label>
+                <input type="text" id="profName" class="form-control" placeholder="Ej: Carlos Gómez">
+            </div>
+            <div class="form-group">
+                <label for="profCUIT">CUIT / CUIL</label>
+                <input type="text" id="profCUIT" class="form-control" placeholder="Ej: 20-34567890-9">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="profPhone">Teléfono</label>
+                    <input type="text" id="profPhone" class="form-control" placeholder="Ej: 11 5555-4444">
+                </div>
+                <div class="form-group">
+                    <label for="profEmail">Email</label>
+                    <input type="email" id="profEmail" class="form-control" placeholder="carlos@electricidad.com">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeProfileModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveProfile()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
