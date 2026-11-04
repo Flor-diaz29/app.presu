@@ -69,6 +69,7 @@ function removeItem(id) {
 
 function renderItemsInput() {
     const container = document.getElementById('itemsContainer');
+    if (!container) return;
     container.innerHTML = '';
     items.forEach((item, index) => {
         const div = document.createElement('div');
@@ -94,26 +95,34 @@ function updatePreview() {
     }
     
     const prevLogo = document.getElementById('prevLogo');
-    if (profile.logoData) {
-        prevLogo.src = profile.logoData;
-        prevLogo.style.display = 'block';
-    } else {
-        prevLogo.style.display = 'none';
+    if (prevLogo) {
+        if (profile.logoData) {
+            prevLogo.src = profile.logoData;
+            prevLogo.style.display = 'block';
+        } else {
+            prevLogo.style.display = 'none';
+        }
     }
 
-    document.getElementById('prevClientName').innerText = document.getElementById('clientName').value || 'Cliente Ejemplo';
-    document.getElementById('prevClientPhone').innerText = document.getElementById('clientPhone').value || '-';
-    document.getElementById('prevNotes').innerText = document.getElementById('budgetNotes').value || 'Sin observaciones adicionales.';
+    const clientNameInput = document.getElementById('clientName');
+    const clientPhoneInput = document.getElementById('clientPhone');
+    const budgetNotesInput = document.getElementById('budgetNotes');
+
+    document.getElementById('prevClientName').innerText = (clientNameInput && clientNameInput.value) ? clientNameInput.value : 'Cliente Ejemplo';
+    document.getElementById('prevClientPhone').innerText = (clientPhoneInput && clientPhoneInput.value) ? clientPhoneInput.value : '-';
+    document.getElementById('prevNotes').innerText = (budgetNotesInput && budgetNotesInput.value) ? budgetNotesInput.value : 'Sin observaciones adicionales.';
 
     const today = new Date();
     document.getElementById('prevDate').innerText = today.toLocaleDateString('es-AR');
 
-    const validityDays = parseInt(document.getElementById('validity').value);
+    const validitySelect = document.getElementById('validity');
+    const validityDays = validitySelect ? parseInt(validitySelect.value) : 15;
     const dueDate = new Date();
     dueDate.setDate(today.getDate() + validityDays);
     document.getElementById('prevDueDate').innerText = dueDate.toLocaleDateString('es-AR') + ` (${validityDays === 1 ? '24hs' : validityDays + ' días'})`;
 
     const prevBody = document.getElementById('prevItems');
+    if (!prevBody) return;
     prevBody.innerHTML = '';
     let total = 0;
 
@@ -167,9 +176,5 @@ function downloadPDF() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Genera el PDF y lo abre en una pestaña nueva listo para guardar en el iPhone
-    html2pdf().from(element).set(options).outputPdf('datauristring', function(pdfDataUri) {
-        const win = window.open();
-        win.document.write(`<iframe src="${pdfDataUri}" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>`);
-    });
+    html2pdf().from(element).set(options).save();
 }
