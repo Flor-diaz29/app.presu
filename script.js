@@ -156,6 +156,17 @@ function sendWhatsApp() {
 }
 
 function downloadPDF() {
-    // Abre el menú nativo del celular o computadora optimizado para guardar como PDF
-    window.print();
+    const element = document.getElementById('printableArea');
+    const clientName = document.getElementById('clientName').value || 'Cliente';
+    
+    const options = {
+        margin:       5,
+        filename:     `Presupuesto_${clientName.replace(/\s+/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Descarga directa del archivo PDF
+    html2pdf().from(element).set(options).save();
 }
