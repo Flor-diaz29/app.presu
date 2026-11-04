@@ -169,12 +169,24 @@ function downloadPDF() {
     const clientName = document.getElementById('clientName').value || 'Cliente';
     
     const options = {
-        margin:       5,
+        margin:       10,
         filename:     `Presupuesto_${clientName.replace(/\s+/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            letterRendering: true,
+            scrollY: 0,          // Fuerza a arrancar desde el inicio del contenido
+            windowWidth: 800     // Simula un ancho fijo de PC para que no comprima el diseño
+        },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
+    // Genera el PDF completo y lo abre limpio en la pestaña nueva
+    html2pdf().from(element).set(options).outputPdf('datauristring', function(pdfDataUri) {
+        const win = window.open();
+        win.document.write(`<iframe src="${pdfDataUri}" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>`);
+    });
+}
     html2pdf().from(element).set(options).save();
 }
