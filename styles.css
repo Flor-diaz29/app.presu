@@ -180,20 +180,19 @@ header {
     margin-top: 1.5rem;
 }
 
-/* VISTA PREVIA */
+/* VISTA PREVIA OPTIMIZADA PARA QUE NO CORTE EL PDF */
 .preview-container {
     background: #e0f2fe;
-    padding: 2.5rem;
+    padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
     border: 1px solid #bae6fd;
-    min-height: 900px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* Quitamos el min-height rígido para que crezca de forma natural con los ítems */
 }
 
 .invoice-header-box {
@@ -301,7 +300,8 @@ header {
 .invoice-summary {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    page-break-inside: avoid; /* Evita que se rompa feo en el PDF */
 }
 
 .total-box {
@@ -330,6 +330,7 @@ header {
     padding-top: 1rem;
     font-size: 0.85rem;
     color: var(--text-dark);
+    page-break-inside: avoid; /* Mantiene las observaciones juntas en el PDF */
 }
 
 .observations-box {
