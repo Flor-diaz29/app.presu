@@ -156,16 +156,6 @@ function sendWhatsApp() {
 }
 
 function downloadPDF() {
-    const element = document.getElementById('printableArea');
-    const clientName = document.getElementById('clientName').value || 'Cliente';
-    
-    const options = {
-        margin:       10,
-        filename:     `Presupuesto_${clientName.replace(/\s+/g, '_')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().from(element).set(options).save();
+    // Abre el menú nativo del celular o computadora optimizado para guardar como PDF
+    window.print();
 }
